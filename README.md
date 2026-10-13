@@ -6,7 +6,7 @@ zsh-autosuggestions and zsh-syntax-highlighting. No plugin manager or special fo
 ## Apply
 
 ```sh
-brew install starship zsh-autosuggestions zsh-syntax-highlighting
+brew bundle --file=Brewfile
 ./install.zsh
 exec zsh -l
 ```
@@ -65,7 +65,7 @@ https://brew.sh if needed, then run:
 ./bootstrap.zsh
 ```
 
-`Brewfile` declares only the three shell dependencies. Both Intel `/usr/local`
+`Brewfile` declares the three shell dependencies and the Ghostty terminal app. Both Intel `/usr/local`
 and Apple Silicon `/opt/homebrew` are detected automatically. No username,
 workspace path, credentials, Git identity, or AI account settings are copied.
 Your work Mac's existing startup files are backed up before replacement.
@@ -98,3 +98,7 @@ Example:
 alastair@macbook ~/dev/projects/shell-config/config git:main [new:1 modified:2 staged:1 ahead:1 ] 22:40:00
 ❯
 ```
+
+Ghostty is installed by bootstrap. Open Ghostty to use the shell configuration.
+On a new Mac, choose “Make Ghostty the Default Terminal” from its app menu
+if you want it as the default; bootstrap does not change macOS app associations.
