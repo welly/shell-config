@@ -1,10 +1,28 @@
 # Two-line development prompt; no special font required.
-format = '$directory$git_branch$git_commit$git_state$git_status$nodejs$php$docker_context$cmd_duration$line_break$status$character'
+format = '$username$hostname$directory$git_branch$git_commit$git_state$git_status$nodejs$php$docker_context$cmd_duration$time$line_break$status$character'
 add_newline = true
 
+[username]
+always_show = true
+style_user = 'bold blue'
+style_root = 'bold red'
+format = '[$user]($style)'
+
+[hostname]
+ssh_only = false
+trim_at = '.'
+style = 'bold blue'
+format = '[@$hostname]($style) '
+
+[time]
+disabled = false
+time_format = '%H:%M:%S'
+style = 'dimmed blue'
+format = '[$time]($style) '
+
 [directory]
-truncation_length = 4
-truncate_to_repo = true
+truncation_length = 0
+truncate_to_repo = false
 repo_root_style = 'bold cyan'
 style = 'cyan'
 read_only = ' read-only'
