@@ -3,7 +3,7 @@ format = '$username$hostname$directory$git_branch$git_commit$git_state$git_statu
 add_newline = true
 
 [username]
-always_show = true
+show_always = true
 style_user = 'bold blue'
 style_root = 'bold red'
 format = '[$user]($style)'
