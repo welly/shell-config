@@ -80,3 +80,20 @@ continues to work without nvm.
 
 The setup does not automatically switch Node versions on directory changes:
 run `nvm use` inside projects with an `.nvmrc`.
+
+## Prompt
+
+The two-line Starship prompt highlights the repository root and relative path,
+branch (or detached commit), merge/rebase state, and counts of modified, staged,
+untracked, conflicted and stashed files. Ahead/behind counts use the locally
+known upstream state; run `git fetch` to refresh it. A clean repository has no
+status badge. Project runtimes and Docker context appear when relevant.
+Long commands show elapsed time; failures show the exit code and a red arrow.
+No Nerd Font is required.
+
+Example:
+
+```text
+shell-config/config git:main [new:1 modified:2 staged:1 ahead:1 ]
+❯
+```

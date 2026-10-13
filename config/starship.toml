@@ -1,22 +1,64 @@
-# Plain text symbols: works with the standard terminal font.
-format = "$directory$git_branch$git_status$nodejs$php$docker_context$cmd_duration$line_break$character"
+# Two-line development prompt; no special font required.
+format = '$directory$git_branch$git_commit$git_state$git_status$nodejs$php$docker_context$cmd_duration$line_break$status$character'
 add_newline = true
 
 [directory]
-truncation_length = 3
+truncation_length = 4
+truncate_to_repo = true
+repo_root_style = 'bold cyan'
+style = 'cyan'
+read_only = ' read-only'
+format = '[$path]($style)[$read_only]($read_only_style) '
+repo_root_format = '[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) '
 
 [git_branch]
-symbol = "git:"
+symbol = 'git:'
+format = '[$symbol$branch(:$remote_branch)]($style) '
+style = 'bold purple'
+
+[git_commit]
+format = '[detached @$hash]($style) '
+style = 'bold yellow'
+only_detached = true
+
+[git_state]
+format = '[ $state( $progress_current/$progress_total)]($style) '
+style = 'bold yellow'
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = 'bold yellow'
+conflicted = 'conflict:$count '
+ahead = 'ahead:$count '
+behind = 'behind:$count '
+diverged = 'ahead:$ahead_count behind:$behind_count '
+untracked = 'new:$count '
+stashed = 'stash:$count '
+modified = 'modified:$count '
+staged = 'staged:$count '
+renamed = 'renamed:$count '
+deleted = 'deleted:$count '
 
 [nodejs]
-symbol = "node:"
+symbol = 'node:'
+format = '[$symbol$version]($style) '
 
 [php]
-symbol = "php:"
+symbol = 'php:'
+format = '[$symbol$version]($style) '
 
 [docker_context]
-symbol = "docker:"
+symbol = 'docker:'
+format = '[$symbol$context]($style) '
+
+[cmd_duration]
+min_time = 2000
+format = '[took $duration](dimmed white) '
+
+[status]
+disabled = false
+format = '[exit:$status](bold red) '
 
 [character]
-success_symbol = "[>](bold green)"
-error_symbol = "[>](bold red)"
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold red)'
