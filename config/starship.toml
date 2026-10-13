@@ -1,0 +1,22 @@
+# Plain text symbols: works with the standard terminal font.
+format = "$directory$git_branch$git_status$nodejs$php$docker_context$cmd_duration$line_break$character"
+add_newline = true
+
+[directory]
+truncation_length = 3
+
+[git_branch]
+symbol = "git:"
+
+[nodejs]
+symbol = "node:"
+
+[php]
+symbol = "php:"
+
+[docker_context]
+symbol = "docker:"
+
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[>](bold red)"

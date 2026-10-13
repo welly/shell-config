@@ -1,0 +1,78 @@
+# Interactive development shell. Portable macOS configuration.
+[[ -o interactive ]] || return
+
+# Resolve Homebrew for interactive shells that aren't login shells, too.
+if [[ -z $HOMEBREW_PREFIX ]]; then
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
+
+typeset -U path fpath
+path=("$HOME/.local/bin" "$HOME/.docker/bin" $path)
+[[ -d "$HOMEBREW_PREFIX/share/zsh/site-functions" ]] && fpath=("$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
+[[ -d "$HOME/.docker/completions" ]] && fpath=("$HOME/.docker/completions" $fpath)
+
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+setopt AUTO_CD INTERACTIVE_COMMENTS
+unsetopt BEEP
+
+# Completion security checks remain enabled; skip insecure directories.
+autoload -Uz compinit
+compinit -i
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%B%d%b'
+
+bindkey -e
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+bindkey '^R' history-incremental-search-backward
+
+alias ll='ls -lah'
+alias gs='git status --short --branch'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gl='git log --oneline --graph --decorate -20'
+alias dc='docker compose'
+alias dps='docker ps'
+alias dd='ddev'
+alias dphp='ddev php'
+alias dcomposer='ddev composer'
+alias dnpm='ddev npm'
+alias dssh='ddev ssh'
+
+mkcd() { [[ $# -eq 1 ]] || { print -u2 'Usage: mkcd directory'; return 2; }; mkdir -p -- "$1" && cd -- "$1"; }
+
+# Keep the existing Homebrew Node available until nvm is explicitly used.
+export NVM_DIR="$HOME/.nvm"
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+  nvm() {
+    unfunction nvm
+    source "$NVM_DIR/nvm.sh"
+    nvm "$@"
+  }
+fi
+
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
+else
+  PROMPT='%F{cyan}%~%f %# '
+fi
+
+[[ -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+# Personal overrides; keep tokens out of this workspace.
+[[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# Syntax highlighting must be loaded after other widgets and plugins.
+[[ -r "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
