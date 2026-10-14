@@ -61,7 +61,7 @@ fi
 if (( $+commands[zoxide] )); then
   eval "$(zoxide init zsh)"
 fi
-if [[ -o zle ]] && (( $+commands[fzf] )); then
+if [[ -o zle && -t 0 && -t 1 ]] && (( $+commands[fzf] )); then
   eval "$(fzf --zsh)"
 fi
 alias lg='lazygit'
