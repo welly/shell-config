@@ -1,104 +1,103 @@
-# Development shell
+# Portable macOS development setup
 
-A small macOS zsh configuration with Homebrew-managed Starship,
-zsh-autosuggestions and zsh-syntax-highlighting. No plugin manager or special font.
+Zsh with Starship, autosuggestions, syntax highlighting, fzf and zoxide.
+Homebrew installs Git, gh, lazygit, delta, bat, ripgrep, DDEV and Ghostty.
+Mise uses Homebrew on Apple Silicon; on Intel, bootstrap installs its official
+versioned binary in `~/.local/bin`, checking the pinned SHA-256 checksum.
+This avoids very long Intel source builds. Update that binary with `mise self-update`.
+Supports Intel and Apple Silicon Macs. No special font required.
 
-## Apply
+## Install on another Mac
 
-```sh
-brew bundle --file=Brewfile
-./install.zsh
-exec zsh -l
-```
-
-Source files live in `config/`. Installation copies them, so this workspace can
-move without breaking your shell. Re-run the installer after edits. Each run
-backs up existing files under `~/.shell-backups/` and records newly created files.
-To undo, restore the files named in that backup's `existing` file to the same
-paths under your home directory, and remove the files named in `created`.
-History and the macOS system startup files are preserved.
-
-## Everyday use
-
-- Tab: completion; up/down: history matching the beginning of your command.
-- Right arrow: accept a suggested command; Ctrl-R: search history.
-- Leading space: omit a command from history. Avoid putting credentials in commands.
-- `ll`: detailed listing; `mkcd directory`: create and enter a directory.
-- `gs`, `gd`, `gds`, `gl`: Git status, diff, staged diff, recent graph.
-- `dc`, `dps`: Docker Compose, running containers.
-- `dd`, `dphp`, `dcomposer`, `dnpm`, `dssh`: DDEV and its container tools.
-- `nvm use`: load existing nvm and select the project's `.nvmrc` version.
-  `nvm install` installs the version if needed; `nvm use default` selects your default.
-  Until nvm is invoked, Node uses the existing PATH installation.
-- `codex` and `claude`: existing commands, unchanged. Codex's Homebrew completion
-  is picked up automatically.
-
-Personal overrides go in `~/.zshrc.local`; it is sourced before syntax highlighting.
-Starship uses `~/.config/starship.toml`. History is shared across sessions, with
-50,000 entries and duplicates removed. Completions exclude insecure directories.
-
-Docker and DDEV were not installed/on PATH during setup. Shortcuts become usable
-when those tools are installed. PHP and Composer shortcuts explicitly use DDEV;
-no host PHP or Composer is installed by this setup. Docker Desktop's conventional
-`~/.docker/bin` and completion paths are included when available.
-
-Upstream documentation:
-- https://starship.rs/
-- https://github.com/zsh-users/zsh-autosuggestions
-- https://github.com/zsh-users/zsh-syntax-highlighting
-- https://github.com/nvm-sh/nvm
-- https://docs.ddev.com/en/stable/users/usage/cli/
-
-## Work Mac / portability
-
-Clone this repository on your work Mac:
+Install Homebrew from https://brew.sh, then:
 
 ```sh
 git clone https://github.com/welly/shell-config.git
 cd shell-config
+./bootstrap.zsh
+mise use --global node@lts
+exec zsh -l
 ```
 
-You can also copy the entire directory to any location. On that Mac, install Homebrew from
-https://brew.sh if needed, then run:
+Open Ghostty. Choose Make Ghostty the Default Terminal from its app menu if
+wanted; bootstrap does not change macOS app associations.
+DDEV still needs a running Docker provider (OrbStack or your workplace's preferred
+provider). PHP and Composer use the DDEV container, without host installations.
+AI tools and account credentials are installed/configured separately.
+
+## Update
 
 ```sh
+git pull
 ./bootstrap.zsh
+exec zsh -l
 ```
 
-`Brewfile` declares the three shell dependencies and the Ghostty terminal app. Both Intel `/usr/local`
-and Apple Silicon `/opt/homebrew` are detected automatically. No username,
-workspace path, credentials, Git identity, or AI account settings are copied.
-Your work Mac's existing startup files are backed up before replacement.
-Keep machine-specific changes in `~/.zshrc.local`.
+`install.zsh` copies the files under `config/`, backing up existing destinations
+and `.gitconfig` to `~/.shell-backups/`. The source directory can move afterwards.
+Restore files listed in a backup's `existing` record to the same home-relative
+paths, and remove files listed in `created`, to undo its file changes.
+The installer enables Node version-file support in mise; to undo that setting,
+run `mise settings unset idiomatic_version_file_enable_tools` if it was previously
+unset. Existing mise configuration is not replaced.
 
-Node, Docker, DDEV, Codex and Claude are separate development tools and are not
-installed by bootstrap. Existing installations are discovered through PATH.
-For nvm on a new machine, follow https://github.com/nvm-sh/nvm#installing-and-updating
-using `PROFILE=/dev/null` to avoid duplicate shell initialization; this configuration
-already loads `~/.nvm/nvm.sh` when you run `nvm`. An existing Node installation
-continues to work without nvm.
+## Commands
 
-The setup does not automatically switch Node versions on directory changes:
-run `nvm use` inside projects with an `.nvmrc`.
+| Command/key | Use |
+|---|---|
+| Ctrl-R | Fuzzy command history |
+| Ctrl-T | Select a file |
+| Option-C | Select a directory in Ghostty |
+| Right arrow | Accept a history suggestion |
+| `z project` / `zi` | Jump to visited directories / interactive selection |
+| `croot` | Enter current Git repository root |
+| `mkcd directory` | Create and enter a directory |
+| `ll` | Detailed listing |
+| `catc file` | Syntax-highlighted file display |
+| `rg pattern` | Search project text |
+| `lg` | Open lazygit |
+| `gs`, `gd`, `gds`, `gl` | Git status, diff, staged diff, history |
+| `dc`, `dps` | Docker Compose / running containers |
+| `dd`, `dphp`, `dcomposer`, `dnpm`, `dssh` | DDEV and container tools |
+| `shell-doctor` | Show shell and dependency paths |
 
-## Prompt
+Git diffs use delta with line numbers and a light appearance matching the current
+Terminal screenshot. Edit `~/.config/git/shell-tools.gitconfig` for a dark theme.
+Git identity and credentials are preserved. To separate work/personal identities,
+use Git `includeIf` rules for your own directories and email addresses.
 
-The two-line Starship prompt always shows username, hostname, full directory path
-(with `~` for home), and local time. It highlights the repository root,
-branch (or detached commit), merge/rebase state, and counts of modified, staged,
-untracked, conflicted and stashed files. Ahead/behind counts use the locally
-known upstream state; run `git fetch` to refresh it. A clean repository has no
-status badge. Project runtimes and Docker context appear when relevant.
-Long commands show elapsed time; failures show the exit code and a red arrow.
-No Nerd Font is required.
+## Runtime management
 
-Example:
+Mise replaces nvm shell initialization; the previous nvm files and Homebrew Node
+are preserved. To reuse an existing nvm installation without downloading again:
 
-```text
-alastair@macbook ~/dev/projects/shell-config/config git:main [new:1 modified:2 staged:1 ahead:1 ] 22:40:00
-❯
+```sh
+mise link node@26.11.1 "$HOME/.nvm/versions/node/v26.11.1"
+mise use --global node@26.11.1
 ```
 
-Ghostty is installed by bootstrap. Open Ghostty to use the shell configuration.
-On a new Mac, choose “Make Ghostty the Default Terminal” from its app menu
-if you want it as the default; bootstrap does not change macOS app associations.
+Use the version you have installed. A linked installation still lives under
+`.nvm`, so keep that directory while the link is in use. Mise selects installed versions when entering projects. `.nvmrc`
+and `.node-version` support is enabled; use `mise install` if a version is missing.
+Use `mise use node@VERSION` to pin a project's version in `mise.toml`, or
+`mise use --global node@lts` for a default. Node defaults are personal settings,
+not overwritten by bootstrap.
+
+Mise also supports other runtimes, project environment variables and tasks.
+Review project configuration before trusting it. Direnv is not included because
+mise covers the initial environment-management requirements.
+
+## Customization
+
+- `~/.zshrc.local`: personal overrides and machine-specific settings.
+- `~/.config/starship.toml`: two-line prompt with user, host, full path, Git state,
+  local time, relevant runtimes, duration and failure exit code.
+- `~/.config/ghostty/config.ghostty`: font size, padding, Option key and zsh.
+  Ghostty also loads its macOS Application Support configuration; settings there
+  may override this file. Reload with Command-Shift-comma.
+- History is shared, deduplicated, and stores 50,000 entries. Leading-space
+  commands are omitted. Keep credentials outside the repository.
+
+Upstream: https://mise.jdx.dev, https://ghostty.org/docs,
+https://github.com/junegunn/fzf, https://github.com/ajeetdsouza/zoxide,
+https://docs.ddev.com, https://dandavison.github.io/delta/.

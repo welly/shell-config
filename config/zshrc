@@ -11,6 +11,7 @@ if [[ -z $HOMEBREW_PREFIX ]]; then
 fi
 
 typeset -U path fpath
+[[ -d "$HOME/.config/zsh/completions" ]] && fpath=("$HOME/.config/zsh/completions" $fpath)
 path=("$HOME/.local/bin" "$HOME/.docker/bin" $path)
 [[ -d "$HOMEBREW_PREFIX/share/zsh/site-functions" ]] && fpath=("$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
 [[ -d "$HOME/.docker/completions" ]] && fpath=("$HOME/.docker/completions" $fpath)
@@ -53,15 +54,34 @@ alias dssh='ddev ssh'
 
 mkcd() { [[ $# -eq 1 ]] || { print -u2 'Usage: mkcd directory'; return 2; }; mkdir -p -- "$1" && cd -- "$1"; }
 
-# Keep the existing Homebrew Node available until nvm is explicitly used.
-export NVM_DIR="$HOME/.nvm"
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-  nvm() {
-    unfunction nvm
-    source "$NVM_DIR/nvm.sh"
-    nvm "$@"
-  }
+# One runtime manager; reads project versions after setup.
+if (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
 fi
+if (( $+commands[zoxide] )); then
+  eval "$(zoxide init zsh)"
+fi
+if [[ -o zle ]] && (( $+commands[fzf] )); then
+  eval "$(fzf --zsh)"
+fi
+alias lg='lazygit'
+alias catc='bat --paging=never'
+croot() {
+  local root
+  root=$(git rev-parse --show-toplevel 2>/dev/null) || { print -u2 'Not inside a Git repository'; return 1; }
+  cd -- "$root"
+}
+shell-doctor() {
+  print -- "zsh: $ZSH_VERSION; config: ${ZDOTDIR:-$HOME}; terminal: $TERM"
+  local tool
+  for tool in brew starship mise node fzf zoxide bat rg git gh lazygit delta ddev docker; do
+    if (( $+commands[$tool] )); then
+      print -- "$tool: ${commands[$tool]}"
+    else
+      print -- "$tool: missing"
+    fi
+  done
+}
 
 if (( $+commands[starship] )); then
   eval "$(starship init zsh)"

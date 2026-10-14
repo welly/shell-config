@@ -15,5 +15,9 @@ else
   exit 1
 fi
 brew bundle --file="$root/Brewfile"
+export PATH="$HOME/.local/bin:$PATH"
+if [[ $(uname -m) == x86_64 ]] && ! command -v mise >/dev/null; then
+  "$root/install-mise-intel.zsh"
+fi
 "$root/install.zsh"
 print 'Open a new terminal, or run: exec zsh -l'
