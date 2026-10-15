@@ -39,6 +39,10 @@ bindkey '^[[A' up-line-or-beginning-search
 bindkey '^[[B' down-line-or-beginning-search
 bindkey '^R' history-incremental-search-backward
 
+# macOS ls colours; bold cyan directories instead of the default dark blue.
+export CLICOLOR=1
+export LSCOLORS='Gxfxcxdxbxegedabagacad'
+
 alias ll='ls -lah'
 alias gs='git status --short --branch'
 alias gd='git diff'
