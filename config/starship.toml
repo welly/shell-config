@@ -1,30 +1,32 @@
 # Two-line development prompt; no special font required.
+# Light RGB colours for black/dark backgrounds; avoid dimmed text.
 format = '$username$hostname$directory$git_branch$git_commit$git_state$git_status$nodejs$php$docker_context$cmd_duration$time$line_break$status$character'
 add_newline = true
 
 [username]
 show_always = true
-style_user = 'bold blue'
-style_root = 'bold red'
+style_user = 'bold #87CEFA'
+style_root = 'bold #FF8787'
 format = '[$user]($style)'
 
 [hostname]
 ssh_only = false
 trim_at = '.'
-style = 'bold blue'
+style = 'bold #87CEFA'
 format = '[@$hostname]($style) '
 
 [time]
 disabled = false
 time_format = '%H:%M:%S'
-style = 'dimmed blue'
+style = '#D0D0D0'
 format = '[$time]($style) '
 
 [directory]
 truncation_length = 0
 truncate_to_repo = false
-repo_root_style = 'bold cyan'
-style = 'cyan'
+repo_root_style = 'bold #87FFFF'
+style = '#87FFFF'
+read_only_style = 'bold #FF8787'
 read_only = ' read-only'
 format = '[$path]($style)[$read_only]($read_only_style) '
 repo_root_format = '[$before_root_path]($style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) '
@@ -32,26 +34,26 @@ repo_root_format = '[$before_root_path]($style)[$repo_root]($repo_root_style)[$p
 [git_branch]
 symbol = 'git:'
 format = '[$symbol$branch(:$remote_branch)]($style) '
-style = 'bold purple'
+style = 'bold #D7AFFF'
 
 [git_commit]
 format = '[detached @$hash]($style) '
-style = 'bold yellow'
+style = 'bold #FFE087'
 only_detached = true
 
 [git_state]
 format = '[ $state( $progress_current/$progress_total)]($style) '
-style = 'bold yellow'
+style = 'bold #FFE087'
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
-style = 'bold yellow'
+style = 'bold #FFE087'
 conflicted = 'conflict:$count '
 ahead = 'ahead:$count '
 behind = 'behind:$count '
 diverged = 'ahead:$ahead_count behind:$behind_count '
-untracked = 'new:$count '
-stashed = 'stash:$count '
+untracked = ''
+stashed = ''
 modified = 'modified:$count '
 staged = 'staged:$count '
 renamed = 'renamed:$count '
@@ -59,24 +61,27 @@ deleted = 'deleted:$count '
 
 [nodejs]
 symbol = 'node:'
+style = 'bold #A8E6A3'
 format = '[$symbol$version]($style) '
 
 [php]
 symbol = 'php:'
+style = 'bold #D7AFFF'
 format = '[$symbol$version]($style) '
 
 [docker_context]
 symbol = 'docker:'
+style = 'bold #87CEFA'
 format = '[$symbol$context]($style) '
 
 [cmd_duration]
 min_time = 2000
-format = '[took $duration](dimmed white) '
+format = '[took $duration](#D0D0D0) '
 
 [status]
 disabled = false
-format = '[exit:$status](bold red) '
+format = '[exit:$status](bold #FF8787) '
 
 [character]
-success_symbol = '[❯](bold green)'
-error_symbol = '[❯](bold red)'
+success_symbol = '[❯](bold #A8E6A3)'
+error_symbol = '[❯](bold #FF8787)'
