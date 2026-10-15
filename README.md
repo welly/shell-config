@@ -91,7 +91,8 @@ mise covers the initial environment-management requirements.
 
 - `~/.zshrc.local`: personal overrides and machine-specific settings.
 - `~/.config/starship.toml`: two-line prompt with user, host, full path, Git state,
-  local time, relevant runtimes, duration and failure exit code.
+  local time, relevant runtimes, duration and failure exit code. Uses light RGB
+  colours without dimming for readability on black or dark terminal backgrounds.
 - `~/.config/ghostty/config.ghostty`: font size, padding, Option key and zsh.
   Ghostty also loads its macOS Application Support configuration; settings there
   may override this file. Reload with Command-Shift-comma.
