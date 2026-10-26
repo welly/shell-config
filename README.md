@@ -48,6 +48,7 @@ unset. Existing mise configuration is not replaced.
 | Ctrl-R | Fuzzy command history |
 | Ctrl-T | Select a file |
 | Option-C | Select a directory in Ghostty |
+| Shift-Cmd-~ | Show/hide Ghostty from any app (grant Accessibility when prompted) |
 | Right arrow | Accept a history suggestion |
 | `z project` / `zi` | Jump to visited directories / interactive selection |
 | `croot` | Enter current Git repository root |
